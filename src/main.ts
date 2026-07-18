@@ -12,9 +12,8 @@ const playBtn = document.getElementById("playBtn") as HTMLButtonElement;
 const playIcon = document.getElementById("playIcon") as Element as SVGElement;
 const pauseIcon = document.getElementById("pauseIcon") as Element as SVGElement;
 const statusText = document.getElementById("statusText") as HTMLDivElement;
-const progressFill = document.getElementById("progressFill") as HTMLDivElement;
+const progressBar = document.getElementById("progressBar") as HTMLInputElement;
 const loopToggle = document.getElementById("loopToggle") as HTMLButtonElement;
-const progressTrack = document.querySelector(".progress-track") as HTMLElement;
 
 function updateProgress(override?: number): void {
   const buf = Audio.getBuffer();
@@ -26,7 +25,8 @@ function updateProgress(override?: number): void {
 function updateStatus(loaded: boolean, current: number, total: number): void {
   statusText.textContent = loaded ? `${fmtTime(current)} / ${fmtTime(total)}` : "No track loaded";
   const percent = loaded && total ? Math.min(100, (current / total) * 100) : 0;
-  progressFill.style.width = fmtPercent(percent);
+  progressBar.value = String(percent / 100);
+  progressBar.style.setProperty("--percent", fmtPercent(percent));
 }
 
 function setPlayIcon(playing: boolean): void {
@@ -72,6 +72,7 @@ function createSlider(config: SliderConfig): HTMLInputElement {
 
   const input = document.createElement("input");
   input.type = "range";
+  input.className = "param-slider";
   input.id = config.id;
   input.min = String(config.min);
   input.max = String(config.max);
@@ -172,7 +173,7 @@ fileInput.onchange = async () => {
   fileName.textContent = file.name;
   fileHint.textContent = "Reading audio file...";
   updateStatus(false, 0, 0);
-  playBtn.disabled = true;
+  playBtn.disabled = progressBar.disabled = true;
 
   try {
     Audio.ensureAudioPipeline();
@@ -183,7 +184,7 @@ fileInput.onchange = async () => {
     fileHint.textContent = "File loaded";
     const buf = Audio.getBuffer()!;
     updateStatus(true, 0, buf.duration);
-    playBtn.disabled = false;
+    playBtn.disabled = progressBar.disabled = false;
     Visualizer.resetTrail(Audio.getAngle());
   } catch {
     fileHint.textContent = "File format is not supported";
@@ -291,31 +292,15 @@ loopToggle.onclick = () => {
 
 let isDragging = false;
 
-progressTrack.onmousedown = (e) => {
+progressBar.oninput = () => {
   if (!Audio.getBuffer()) return;
   isDragging = true;
-  const rect = progressTrack.getBoundingClientRect();
+  updateProgress(Number(progressBar.value) * Audio.getBuffer()!.duration);
+};
 
-  function seekPreview(clientX: number): void {
-    const buf = Audio.getBuffer()!;
-    const r = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    updateProgress(r * buf.duration);
-  }
-
-  seekPreview(e.clientX);
-
-  function onMove(e: MouseEvent) {
-    seekPreview(e.clientX);
-  }
-  function onUp(e: MouseEvent) {
-    isDragging = false;
-    const buf = Audio.getBuffer()!;
-    const r = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    Audio.seekTo(r * buf.duration);
-    updateProgress();
-    window.onmousemove = null;
-    window.onmouseup = null;
-  }
-  window.onmousemove = onMove;
-  window.onmouseup = onUp;
+progressBar.onchange = () => {
+  if (!Audio.getBuffer()) return;
+  isDragging = false;
+  Audio.seekTo(Number(progressBar.value) * Audio.getBuffer()!.duration);
+  updateProgress();
 };

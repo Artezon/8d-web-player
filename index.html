@@ -105,9 +105,16 @@
         </button>
         <div class="player-meta">
           <div class="status" id="statusText">No track loaded</div>
-          <div class="progress-track">
-            <div class="progress-fill" id="progressFill"></div>
-          </div>
+          <input
+            type="range"
+            id="progressBar"
+            class="progress-bar"
+            min="0"
+            max="1"
+            step="any"
+            value="0"
+            disabled
+          />
         </div>
         <button class="loop-toggle" id="loopToggle">
           <svg
