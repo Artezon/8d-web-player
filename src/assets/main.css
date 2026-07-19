@@ -18,6 +18,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter Variable", Roboto, sans-serif;
 }
 body {
   display: flex;
@@ -26,7 +27,6 @@ body {
   background: var(--bg);
   background-attachment: fixed;
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Inter Variable", Roboto, sans-serif;
   -webkit-user-select: none;
   user-select: none;
 }
@@ -35,7 +35,6 @@ body {
   font-weight: 700;
   text-align: center;
   color: var(--text);
-  margin: 0 0 22px;
 }
 .panel {
   width: 600px;
@@ -46,6 +45,9 @@ body {
   position: relative;
   overflow: hidden;
   background: linear-gradient(180deg, var(--panel-1), var(--panel-2));
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 .stage {
   position: relative;
@@ -55,7 +57,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
 }
 .stage svg {
   width: 100%;
@@ -78,7 +79,6 @@ body {
   transition:
     border-color 0.15s,
     background 0.15s;
-  margin-bottom: 20px;
 }
 .file-drop:hover,
 .file-drop.drag-over {
@@ -121,7 +121,6 @@ body {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 26px;
 }
 .play-btn {
   width: 52px;
@@ -142,7 +141,7 @@ body {
 .play-btn:hover:not(:disabled) {
   border-color: var(--primary);
 }
-.play-btn:active {
+.play-btn:active:not(:disabled) {
   transform: scale(0.94);
 }
 .play-btn:disabled {
@@ -213,6 +212,7 @@ body {
 }
 .loop-toggle:hover {
   border-color: var(--primary-40);
+  background: var(--primary-08);
 }
 .loop-toggle:active {
   transform: scale(0.94);
@@ -268,6 +268,40 @@ body {
 }
 #velocity.param-slider {
   background: linear-gradient(90deg, var(--warm) 0%, var(--border) 50%, var(--violet) 100%);
+}
+.save-row {
+  display: flex;
+  gap: 8px;
+}
+.save-btn {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.save-btn:not(:disabled):hover {
+  border-color: var(--primary-40);
+  background: var(--primary-08);
+}
+.save-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.save-btn:active:not(:disabled) {
+  transform: scale(0.94);
 }
 @media (max-width: 640px) {
   .panel {

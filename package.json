@@ -19,6 +19,9 @@
   },
   "dependencies": {
     "@audio/reverb-freeverb": "^1.0.4",
-    "@fontsource-variable/inter": "^5.2.8"
+    "@fontsource-variable/inter": "^5.2.8",
+    "@mediabunny/flac-encoder": "^1.50.9",
+    "@mediabunny/mp3-encoder": "^1.50.9",
+    "mediabunny": "^1.50.9"
   }
 }

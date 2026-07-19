@@ -13,6 +13,10 @@ let isLooping = false;
 let savedAngle = 0;
 let currentRPM = 0;
 let currentRadius = 3;
+let currentRoom = 0.5;
+let currentDamp = 0.25;
+let currentMix = 0.33;
+let currentBassGain = 0;
 let onEndedCallback: (() => void) | null = null;
 let audioTimerId = 0;
 
@@ -188,21 +192,45 @@ export function setPannerPosition(angle: number): void {
 }
 
 export function updateReverb(room: number, damp: number, mix: number): void {
+  currentRoom = room;
+  currentDamp = damp;
+  currentMix = mix;
   if (!convolver || !audioCtx) return;
   convolver.buffer = generateFreeverbIR(audioCtx, room, damp, mix);
 }
 
 export function updateBassBoost(gain: number): void {
+  currentBassGain = gain;
   if (!bassBoostFilter) return;
   bassBoostFilter.gain.value = gain;
+}
+
+export interface AudioSettings {
+  rpm: number;
+  radius: number;
+  room: number;
+  damp: number;
+  mix: number;
+  bassGain: number;
+}
+
+export function getSettings(): AudioSettings {
+  return {
+    rpm: currentRPM,
+    radius: currentRadius,
+    room: currentRoom,
+    damp: currentDamp,
+    mix: currentMix,
+    bassGain: currentBassGain,
+  };
 }
 
 export function tryResume(): Promise<void> | undefined {
   return audioCtx?.state === "suspended" ? audioCtx.resume() : undefined;
 }
 
-function generateFreeverbIR(
-  ctx: AudioContext,
+export function generateFreeverbIR(
+  ctx: BaseAudioContext,
   room: number,
   damp: number,
   mix: number,
