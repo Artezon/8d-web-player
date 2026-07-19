@@ -1,7 +1,15 @@
 import { defineConfig } from "vite";
 import { ViteMinifyPlugin } from "vite-plugin-minify";
 import { viteSingleFile } from "vite-plugin-singlefile";
+import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
-  plugins: [ViteMinifyPlugin(), viteSingleFile()],
+  plugins: [
+    ViteMinifyPlugin(),
+    viteSingleFile(),
+    VitePWA({
+      registerType: "autoUpdate",
+      manifest: false,
+    }),
+  ],
 });
