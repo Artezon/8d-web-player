@@ -143,7 +143,7 @@ const dampSlider = createSlider({
   step: "1",
   formatter: fmtPercent,
   onChange: updateReverb,
-  defaultValue: 40,
+  defaultValue: 25,
 });
 createSlider({
   id: "bass",
