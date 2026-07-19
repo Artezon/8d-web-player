@@ -10,6 +10,9 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: false,
+      workbox: {
+        navigateFallbackDenylist: [/^\/favicon/],
+      },
     }),
   ],
 });
