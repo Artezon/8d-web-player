@@ -165,7 +165,6 @@ fileInput.onchange = async () => {
 
   if (Audio.getIsPlaying()) {
     Audio.pause();
-    stopAudioPanner();
     setPlayIcon(false);
   }
   stopRendering();
@@ -209,23 +208,6 @@ dropZone.ondrop = (e) => {
   }
 };
 
-let audioTimerId = 0;
-
-function startAudioPanner(): void {
-  stopAudioPanner();
-  audioTimerId = window.setInterval(() => {
-    if (!Audio.getIsPlaying()) return;
-    Audio.setPannerPosition(Audio.getAngle());
-  }, 50);
-}
-
-function stopAudioPanner(): void {
-  if (audioTimerId) {
-    clearInterval(audioTimerId);
-    audioTimerId = 0;
-  }
-}
-
 let rafId = 0;
 let lastFrameTime = 0;
 
@@ -259,7 +241,6 @@ function stopRendering(): void {
 }
 
 Audio.setOnEndedCallback(() => {
-  stopAudioPanner();
   setPlayIcon(false);
   updateProgress();
 });
@@ -272,13 +253,11 @@ playBtn.onclick = async () => {
   if (!Audio.getIsPlaying()) {
     Audio.play();
     stopRendering();
-    startAudioPanner();
     startRendering();
     Visualizer.resetTrail(Audio.getAngle());
     setPlayIcon(true);
   } else {
     Audio.pause();
-    stopAudioPanner();
     updateProgress();
     setPlayIcon(false);
   }

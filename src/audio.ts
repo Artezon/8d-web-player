@@ -14,6 +14,7 @@ let savedAngle = 0;
 let currentRPM = 0;
 let currentRadius = 3;
 let onEndedCallback: (() => void) | null = null;
+let audioTimerId = 0;
 
 function saveAngle(): void {
   if (!audioCtx || !isPlaying) return;
@@ -42,6 +43,21 @@ function stopSource(): void {
   sourceNode = null;
 }
 
+function startAudioPanner(): void {
+  stopAudioPanner();
+  audioTimerId = window.setInterval(() => {
+    if (!isPlaying) return;
+    setPannerPosition(getAngle());
+  }, 5);
+}
+
+function stopAudioPanner(): void {
+  if (audioTimerId) {
+    clearInterval(audioTimerId);
+    audioTimerId = 0;
+  }
+}
+
 export function setOnEndedCallback(callback: (() => void) | null): void {
   onEndedCallback = callback;
 }
@@ -54,6 +70,7 @@ function onEnded(): void {
     startSource(0);
   } else {
     isPlaying = false;
+    stopAudioPanner();
     onEndedCallback?.();
   }
 }
@@ -76,6 +93,7 @@ export async function loadAudio(data: ArrayBuffer): Promise<void> {
   if (isPlaying) {
     stopSource();
     isPlaying = false;
+    stopAudioPanner();
   }
   savedAngle = 0;
   pauseOffset = 0;
@@ -91,6 +109,7 @@ export function play(): void {
 
   startSource(pauseOffset);
   isPlaying = true;
+  startAudioPanner();
 }
 
 export function pause(): void {
@@ -99,6 +118,7 @@ export function pause(): void {
   saveAngle();
   stopSource();
   isPlaying = false;
+  stopAudioPanner();
 }
 
 export function currentOffset(): number {
