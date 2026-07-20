@@ -11,7 +11,17 @@ export default defineConfig({
       registerType: "autoUpdate",
       manifest: false,
       workbox: {
-        navigateFallbackDenylist: [/^\/favicon/],
+        navigateFallback: null,
+        runtimeCaching: [
+          {
+            urlPattern: /.*/,
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "app-cache",
+              networkTimeoutSeconds: 3,
+            },
+          },
+        ],
       },
     }),
   ],

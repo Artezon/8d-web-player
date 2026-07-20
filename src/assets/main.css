@@ -316,6 +316,9 @@ body {
   color: var(--text);
   font-weight: 500;
 }
+.center {
+  text-align: center;
+}
 @media (max-width: 640px) {
   .panel {
     width: 100%;
